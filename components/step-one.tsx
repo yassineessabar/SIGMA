@@ -5,7 +5,16 @@ import { InfoIcon } from "lucide-react"
 import { InfoModal } from "./info-modal"
 import Image from "next/image"
 
-export function StepOne({ formData, updateFormData }) {
+interface FormData {
+  brokerAccountNumber: string
+}
+
+interface StepOneProps {
+  formData: FormData
+  updateFormData: (updatedFields: Partial<FormData>) => void
+}
+
+export function StepOne({ formData, updateFormData }: StepOneProps) {
   const signupSteps = [
     {
       title: "Visit VT Markets website",
@@ -87,4 +96,3 @@ export function StepOne({ formData, updateFormData }) {
     </div>
   )
 }
-

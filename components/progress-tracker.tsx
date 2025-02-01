@@ -1,6 +1,13 @@
 import { Progress } from "@/components/ui/progress"
+interface Step {
+  status: "completed" | "pending" | "verification" 
+}
 
-export function ProgressTracker({ steps }) {
+interface ProgressTrackerProps {
+  steps: Step[]
+}
+
+export function ProgressTracker({ steps }: ProgressTrackerProps) {
   const completedSteps = steps.filter((step) => step.status === "completed").length
   const progress = (completedSteps / steps.length) * 100
 

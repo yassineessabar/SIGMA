@@ -11,7 +11,7 @@ import { StepThree } from "@/components/step-three"
 import { SummaryStep } from "@/components/summary-step"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronRight, ChevronLeft } from "lucide-react"
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify"
 
 const steps = [
   { id: 0, title: "Basic Info", icon: "👤" },
@@ -21,21 +21,35 @@ const steps = [
   { id: 4, title: "Review & Submit", icon: "✅" },
 ]
 
+interface FormData {
+  fullName: string
+  email: string
+  brokerAccountNumber: string
+  depositAmount: number
+  depositProof?: File | null
+  selectedRobot: "" | "sigmatic3.5" | "sigmaticRV2" | "sigmaticRV4" 
+}
+
 export function OnboardingForm() {
   const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     brokerAccountNumber: "",
-    depositAmount: "",
-    depositProof: null,
-    selectedRobot: "",
+    depositAmount: 0, 
+    depositProof: undefined,
+    selectedRobot: "", 
   })
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const updateFormData = (data: { fullName: string; email: string; brokerAccountNumber: string; depositAmount: string; depositProof: null; selectedRobot: string }) => {
-    setFormData((prev) => ({ ...prev, ...data }))
+  // ✅ Ensures depositAmount remains a number
+  const updateFormData = (data: Partial<FormData>) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...data,
+      depositAmount: data.depositAmount !== undefined ? Number(data.depositAmount) : prev.depositAmount,
+    }))
   }
 
   const validateStep = (step: number) => {
@@ -45,13 +59,9 @@ export function OnboardingForm() {
       case 1:
         return formData.brokerAccountNumber.trim() !== ""
       case 2:
-        return (
-          formData.depositAmount.trim() !== "" &&
-          Number.parseFloat(formData.depositAmount) >= 400
-          // formData.depositProof !== null
-        )
+        return formData.depositAmount >= 400
       case 3:
-        return formData.selectedRobot === "sigmatic3.5"
+        return ["sigmatic3.5", "sigmaticRV2", "sigmaticRV4"].includes(formData.selectedRobot)
       default:
         return true
     }
@@ -77,7 +87,7 @@ export function OnboardingForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId, // Retrieved from step 1
+          userId,
           brokerAccountNumber: formData.brokerAccountNumber,
           depositAmount: formData.depositAmount,
           selectedRobot: formData.selectedRobot,
@@ -93,16 +103,15 @@ export function OnboardingForm() {
           autoClose: 3000,
         })
 
-        // Reset form
         setFormData({
           fullName: "",
           email: "",
           brokerAccountNumber: "",
-          depositAmount: "",
-          depositProof: null,
+          depositAmount: 0, 
+          depositProof: undefined,
           selectedRobot: "",
         })
-        setCurrentStep(0) // Reset to Step 1
+        setCurrentStep(0)
       } else {
         throw new Error(result.message)
       }
@@ -111,8 +120,6 @@ export function OnboardingForm() {
       toast.error("There was an error submitting your information.")
     }
   }
-
-
 
   const handleFirstStepSubmit = async () => {
     try {
@@ -131,8 +138,8 @@ export function OnboardingForm() {
       console.log("Step 1 result:", result)
 
       if (result.success) {
-        setUserId(result.userId) // Save user ID for later steps
-        setCurrentStep(1) // Move to the next step
+        setUserId(result.userId)
+        setCurrentStep(1)
       } else {
         throw new Error(result.message)
       }
@@ -141,8 +148,6 @@ export function OnboardingForm() {
       toast.error("Failed to save Step 1")
     }
   }
-
-
 
   const renderStep = () => {
     switch (currentStep) {
@@ -172,12 +177,9 @@ export function OnboardingForm() {
             {steps.map((step, index) => (
               <div
                 key={step.id}
-                className={`flex flex-col items-center ${index === currentStep
-                    ? "text-primary scale-110 transition-all duration-200"
-                    : index < currentStep
-                      ? "text-primary"
-                      : "text-gray-400"
-                  }`}
+                className={`flex flex-col items-center ${
+                  index === currentStep ? "text-primary scale-110 transition-all duration-200" : index < currentStep ? "text-primary" : "text-gray-400"
+                }`}
               >
                 <span className="text-2xl mb-2">{step.icon}</span>
                 <span className="text-xs font-medium">{step.title}</span>
@@ -188,45 +190,18 @@ export function OnboardingForm() {
       </CardHeader>
       <CardContent className="pt-8 px-8">
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">{steps[currentStep].title}</h2>
-        {/* <form onSubmit={handleSubmit}> */}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div key={currentStep} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }}>
             {renderStep()}
           </motion.div>
         </AnimatePresence>
-        {/* </form> */}
       </CardContent>
       <CardFooter className="flex justify-between border-t border-gray-200 pt-6 pb-8 px-8">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handlePrevious}
-          disabled={currentStep === 0}
-          className="border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-        >
+        <Button type="button" variant="outline" onClick={handlePrevious} disabled={currentStep === 0}>
           <ChevronLeft className="w-4 h-4 mr-2" />
           Previous
         </Button>
-        <Button
-          type={currentStep === steps.length - 1 ? "submit" : "button"}
-          onClick={() => {
-            if (currentStep === 0) {
-              handleFirstStepSubmit()
-            } else if (currentStep === steps.length - 1) {
-              handleFinalSubmit()
-            } else {
-              handleNext()
-            }
-          }}
-          disabled={!validateStep(currentStep) || isSubmitting}
-          className="bg-primary hover:bg-primary/90 text-white transition-colors duration-200"
-        >
+        <Button type="button" onClick={() => (currentStep === 0 ? handleFirstStepSubmit() : currentStep === steps.length - 1 ? handleFinalSubmit() : handleNext())} disabled={!validateStep(currentStep) || isSubmitting}>
           {currentStep === steps.length - 1 ? (isSubmitting ? "Submitting..." : "Submit") : "Next"}
           {currentStep !== steps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
         </Button>
@@ -234,4 +209,3 @@ export function OnboardingForm() {
     </Card>
   )
 }
-

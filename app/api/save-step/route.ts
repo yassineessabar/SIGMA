@@ -6,14 +6,11 @@ export async function POST(request: NextRequest) {
   try {
     const { fullName, email } = await request.json()
 
-    // Connect to MongoDB
     await connectToDatabase()
 
-    // Check if user already exists
     let existingUser = await FormDataModel.findOne({ email })
 
     if (!existingUser) {
-      // Save new user with stepCompleted = 1
       existingUser = new FormDataModel({
         fullName,
         email,

@@ -1,7 +1,15 @@
 import { ProgressTracker } from "@/components/progress-tracker"
 import { StepCard } from "@/components/step-card"
 
-const steps = [
+interface Step {
+  id: number
+  title: string
+  instruction: string
+  status: "completed" | "pending" | "verification" // ✅ Ensure it matches ProgressTracker.tsx
+  verificationRequired: boolean
+}
+
+const steps: Step[] = [
   {
     id: 1,
     title: "Sign Up with Recommended Broker",

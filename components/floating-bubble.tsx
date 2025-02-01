@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
 
 export function FloatingBubble() {
   const [isOpen, setIsOpen] = useState(false)
@@ -27,9 +28,11 @@ export function FloatingBubble() {
             <p className="text-sm mb-4">
               If you have any questions about the onboarding process, our support team is here to assist you 24/7.
             </p>
-            <Button className="w-full bg-primary hover:bg-primary/90 text-white transition-colors duration-200">
-              Contact Support
-            </Button>
+            <Link href="https://www.sigmatic-trading.com/contact" passHref>
+  <Button className="w-full bg-primary hover:bg-primary/90 text-white transition-colors duration-200">
+    Contact Support
+  </Button>
+</Link>
           </motion.div>
         )}
       </AnimatePresence>

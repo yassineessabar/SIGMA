@@ -1,9 +1,14 @@
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { InfoIcon } from "lucide-react"
 
-export function InfoModal({ title, children }) {
+interface InfoModalProps {
+  title: string
+  children: ReactNode
+}
+
+export function InfoModal({ title, children }: InfoModalProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -23,4 +28,3 @@ export function InfoModal({ title, children }) {
     </Dialog>
   )
 }
-

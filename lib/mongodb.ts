@@ -7,15 +7,12 @@ if (!MONGODB_URI) {
 }
 
 let cached = (global as any).mongoose || { conn: null, promise: null }
-
 export async function connectToDatabase() {
   if (cached.conn) return cached.conn
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       dbName: "onboarding",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     }).then((mongoose) => mongoose)
   }
 

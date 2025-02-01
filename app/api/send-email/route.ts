@@ -7,10 +7,8 @@ export async function POST(request: NextRequest) {
   try {
     const { userId, brokerAccountNumber, depositAmount, selectedRobot } = await request.json()
 
-    // Connect to MongoDB
     await connectToDatabase()
 
-    // Find the user and update the details
     const updatedUser = await FormDataModel.findByIdAndUpdate(
       userId,
       { brokerAccountNumber, depositAmount, selectedRobot, stepCompleted: 2 },
@@ -21,7 +19,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 })
     }
 
-    // Set up Nodemailer transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -30,7 +27,6 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Email content
     const mailOptions = {
       from: process.env.EMAIL,
       to: process.env.RECIEVER_EMAIL,
@@ -45,7 +41,6 @@ export async function POST(request: NextRequest) {
       `,
     }
 
-    // Send email
     await transporter.sendMail(mailOptions)
 
     return NextResponse.json({ success: true, message: "Data saved & email sent" })

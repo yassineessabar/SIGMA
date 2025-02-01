@@ -1,13 +1,28 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { CheckCircleIcon } from "lucide-react"
 
-export function SummaryStep({ formData }) {
-  const getRobotName = (id) => {
-    const robots = {
+interface FormData {
+  fullName: string
+  email: string
+  brokerAccountNumber: string
+  depositAmount: number
+  depositProof?: File | null 
+  selectedRobot: "" | "sigmatic3.5" | "sigmaticRV2" | "sigmaticRV4" 
+}
+
+interface SummaryStepProps {
+  formData: FormData
+}
+
+export function SummaryStep({ formData }: SummaryStepProps) {
+  const getRobotName = (id: FormData["selectedRobot"]) => {
+    const robots: Record<FormData["selectedRobot"], string> = {
       "sigmatic3.5": "Sigmatic 3.5 🚀",
-      "sigmatic3.0": "Sigmatic 3.0 📈",
-      "sigmatic2.5": "Sigmatic 2.5 🛡️",
-    }
+      "sigmaticRV2": "Sigmatic RV2 📈",
+      "sigmaticRV4": "Sigmatic RV4 🛡️",
+      "": "No robot selected", 
+    };
+    
     return robots[id] || "Unknown Robot"
   }
 
@@ -52,4 +67,3 @@ export function SummaryStep({ formData }) {
     </div>
   )
 }
-

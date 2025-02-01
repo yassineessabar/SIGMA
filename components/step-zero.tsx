@@ -2,7 +2,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { motion } from "framer-motion"
 
-export function StepZero({ formData, updateFormData }) {
+interface FormData {
+  fullName: string
+  email: string
+}
+
+interface StepZeroProps {
+  formData: FormData
+  updateFormData: (updatedFields: Partial<FormData>) => void
+}
+
+export function StepZero({ formData, updateFormData }: StepZeroProps) {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -59,4 +69,3 @@ export function StepZero({ formData, updateFormData }) {
     </div>
   )
 }
-

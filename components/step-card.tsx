@@ -3,8 +3,19 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function StepCard({ step }) {
-  const getStatusIcon = (status: any) => {
+interface Step {
+  id: number
+  title: string
+  instruction: string
+  status: "completed" | "pending" | "verification"
+}
+
+interface StepCardProps {
+  step: Step
+}
+
+export function StepCard({ step }: StepCardProps) {
+  const getStatusIcon = (status: Step["status"]) => {
     switch (status) {
       case "completed":
         return "✅"
@@ -34,12 +45,6 @@ export function StepCard({ step }) {
             <Input id="account-number" placeholder="Enter your account number" />
           </div>
         )}
-        {step.id === 2 && (
-          <div className="space-y-2">
-            <Label htmlFor="deposit-proof">Upload Deposit Proof</Label>
-            <Input id="deposit-proof" type="file" />
-          </div>
-        )}
         {step.id === 3 && (
           <div className="space-y-2">
             <Label htmlFor="vt-axi-account">VT or AXI Account Number</Label>
@@ -53,4 +58,3 @@ export function StepCard({ step }) {
     </Card>
   )
 }
-

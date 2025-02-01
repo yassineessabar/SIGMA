@@ -7,7 +7,16 @@ import { motion } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { LockIcon } from "lucide-react"
 
-export function StepThree({ formData, updateFormData }) {
+interface FormData {
+  selectedRobot: "sigmatic3.5" | "sigmaticRV2" | "sigmaticRV4" | ""
+}
+
+interface StepThreeProps {
+  formData: FormData
+  updateFormData: (updatedFields: Partial<FormData>) => void
+}
+
+export function StepThree({ formData, updateFormData }: StepThreeProps) {
   const robots = [
     {
       id: "sigmatic3.5",
@@ -63,7 +72,7 @@ export function StepThree({ formData, updateFormData }) {
 
         <RadioGroup
           value={formData.selectedRobot}
-          onValueChange={(value) => updateFormData({ selectedRobot: value })}
+          onValueChange={(value) => updateFormData({ selectedRobot: value as FormData["selectedRobot"] })}
           className="space-y-4"
         >
           {robots.map((robot) => (
@@ -108,4 +117,3 @@ export function StepThree({ formData, updateFormData }) {
     </TooltipProvider>
   )
 }
-

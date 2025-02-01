@@ -5,7 +5,16 @@ import { InfoIcon } from "lucide-react"
 import { InfoModal } from "./info-modal"
 import Image from "next/image"
 
-export function StepTwo({ formData, updateFormData }) {
+interface FormData {
+  depositAmount: number
+}
+
+interface StepTwoProps {
+  formData: FormData
+  updateFormData: (updatedFields: Partial<FormData>) => void
+}
+
+export function StepTwo({ formData, updateFormData }: StepTwoProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -58,21 +67,12 @@ export function StepTwo({ formData, updateFormData }) {
           id="depositAmount"
           type="number"
           value={formData.depositAmount}
-          onChange={(e) => updateFormData({ depositAmount: e.target.value })}
+          onChange={(e) => updateFormData({ depositAmount: Number(e.target.value) })}
           placeholder="Enter deposit amount"
           min="400"
         />
         <p className="text-sm text-gray-600">Enter the exact amount you deposited into your VT Markets account.</p>
       </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="depositProof">Upload Deposit Proof</Label>
-        <Input id="depositProof" type="file" onChange={(e) => updateFormData({ depositProof: e.target.files[0] })} />
-        <p className="text-sm text-gray-600">
-          Upload a screenshot or PDF of your deposit confirmation. This helps us verify your account funding.
-        </p>
-      </div>
     </div>
   )
 }
-

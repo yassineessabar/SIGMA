@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { HelpCircle } from "lucide-react"
+import Link from "next/link"
 
 export function Header() {
   return (
@@ -17,14 +18,16 @@ export function Header() {
               width={160}
               height={40}
               priority
-              className="h-8 w-auto"
+              className="h-14 w-auto"
             />
           </motion.div>
         </div>
-        <Button variant="ghost" className="text-gray-600 hover:text-gray-800 transition-colors duration-200">
-          <HelpCircle className="w-4 h-4 mr-2" />
-          Help
-        </Button>
+        <Link href="https://www.sigmatic-trading.com/contact" passHref>
+  <Button variant="ghost" className="text-gray-600 hover:text-gray-800 transition-colors duration-200">
+    <HelpCircle className="w-4 h-4 mr-2" />
+    Help
+  </Button>
+</Link>
       </div>
     </header>
   )
