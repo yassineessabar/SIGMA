@@ -1,18 +1,25 @@
 import { NextRequest, NextResponse } from "next/server"
-import nodemailer from "nodemailer"
 import { connectToDatabase } from "@/lib/mongodb"
 import FormDataModel from "@/models/FormData"
+import nodemailer from "nodemailer"
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.json()
+    const { userId, brokerAccountNumber, depositAmount, selectedRobot } = await request.json()
 
     // Connect to MongoDB
     await connectToDatabase()
 
-    // Save data to MongoDB
-    const newFormData = new FormDataModel(formData)
-    await newFormData.save()
+    // Find the user and update the details
+    const updatedUser = await FormDataModel.findByIdAndUpdate(
+      userId,
+      { brokerAccountNumber, depositAmount, selectedRobot, stepCompleted: 2 },
+      { new: true }
+    )
+
+    if (!updatedUser) {
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 })
+    }
 
     // Set up Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -23,18 +30,18 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Email options
+    // Email content
     const mailOptions = {
       from: process.env.EMAIL,
       to: process.env.RECIEVER_EMAIL,
       subject: "New Onboarding Submission",
       html: `
         <h2>New Onboarding Submission</h2>
-        <p><b>Full Name:</b> ${formData.fullName}</p>
-        <p><b>Email:</b> ${formData.email}</p>
-        <p><b>Broker Account Number:</b> ${formData.brokerAccountNumber}</p>
-        <p><b>Deposit Amount:</b> ${formData.depositAmount}</p>
-        <p><b>Selected Robot:</b> ${formData.selectedRobot}</p>
+        <p><b>Full Name:</b> ${updatedUser.fullName}</p>
+        <p><b>Email:</b> ${updatedUser.email}</p>
+        <p><b>Broker Account Number:</b> ${updatedUser.brokerAccountNumber}</p>
+        <p><b>Deposit Amount:</b> ${updatedUser.depositAmount}</p>
+        <p><b>Selected Robot:</b> ${updatedUser.selectedRobot}</p>
       `,
     }
 
@@ -43,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Data saved & email sent" })
   } catch (error) {
-    console.error("Error:", error)
-    return NextResponse.json({ success: false, message: "Operation failed" }, { status: 500 })
+    console.error("Error completing onboarding:", error)
+    return NextResponse.json({ success: false, message: "Failed to complete onboarding" }, { status: 500 })
   }
 }

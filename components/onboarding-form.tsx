@@ -31,6 +31,7 @@ export function OnboardingForm() {
     depositProof: null,
     selectedRobot: "",
   })
+  const [userId, setUserId] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const updateFormData = (data: { fullName: string; email: string; brokerAccountNumber: string; depositAmount: string; depositProof: null; selectedRobot: string }) => {
@@ -46,11 +47,11 @@ export function OnboardingForm() {
       case 2:
         return (
           formData.depositAmount.trim() !== "" &&
-          Number.parseFloat(formData.depositAmount) >= 400 
+          Number.parseFloat(formData.depositAmount) >= 400
           // formData.depositProof !== null
         )
       case 3:
-        return formData.selectedRobot === "sigmatic3.5" 
+        return formData.selectedRobot === "sigmatic3.5"
       default:
         return true
     }
@@ -67,55 +68,80 @@ export function OnboardingForm() {
       setCurrentStep(currentStep - 1)
     }
   }
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-  
-    if (validateStep(currentStep)) {
-      setIsSubmitting(true)
-      try {
-        const response = await fetch("/api/send-email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        })
-  
-        const result = await response.json()
-  
-        if (result.success) {
-          toast.success("Your onboarding information has been sent successfully.", {
-            position: "bottom-center",
-            autoClose: 3000,
-          })
-  
-          // Reset form
-          setFormData({
-            fullName: "",
-            email: "",
-            brokerAccountNumber: "",
-            depositAmount: "",
-            depositProof: null,
-            selectedRobot: "",
-          })
-          setCurrentStep(0)
-        } else {
-          throw new Error(result.message)
-        }
-      } catch (error) {
-        console.error("Error during form submission:", error)
-        toast.error("There was an error submitting your information.", {
+
+  const handleFinalSubmit = async () => {
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId, // Retrieved from step 1
+          brokerAccountNumber: formData.brokerAccountNumber,
+          depositAmount: formData.depositAmount,
+          selectedRobot: formData.selectedRobot,
+        }),
+      })
+
+      const result = await response.json()
+      console.log("Final step result:", result)
+
+      if (result.success) {
+        toast.success("Your onboarding information has been sent successfully.", {
           position: "bottom-center",
+          autoClose: 3000,
         })
-      } finally {
-        setIsSubmitting(false)
+
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          brokerAccountNumber: "",
+          depositAmount: "",
+          depositProof: null,
+          selectedRobot: "",
+        })
+        setCurrentStep(0) // Reset to Step 1
+      } else {
+        throw new Error(result.message)
       }
-    } else {
-      console.log("Form validation failed")
+    } catch (error) {
+      console.error("Error completing onboarding:", error)
+      toast.error("There was an error submitting your information.")
     }
   }
-  
+
+
+
+  const handleFirstStepSubmit = async () => {
+    try {
+      const response = await fetch("/api/save-step", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+        }),
+      })
+
+      const result = await response.json()
+      console.log("Step 1 result:", result)
+
+      if (result.success) {
+        setUserId(result.userId) // Save user ID for later steps
+        setCurrentStep(1) // Move to the next step
+      } else {
+        throw new Error(result.message)
+      }
+    } catch (error) {
+      console.error("Error saving first step:", error)
+      toast.error("Failed to save Step 1")
+    }
+  }
+
 
 
   const renderStep = () => {
@@ -138,7 +164,7 @@ export function OnboardingForm() {
   return (
     <Card className="w-full max-w-4xl bg-white shadow-md rounded-lg border border-gray-200">
       <CardHeader className="border-b border-gray-200 pb-7 pt-8">
-      <ToastContainer position="bottom-center" autoClose={3000} />
+        <ToastContainer position="bottom-center" autoClose={3000} />
         <CardTitle className="text-3xl font-bold text-gray-800 text-center">Sigmatic Trading Onboarding</CardTitle>
         <div className="mt-6">
           <Progress value={((currentStep + 1) / steps.length) * 100} className="w-full h-2" />
@@ -146,13 +172,12 @@ export function OnboardingForm() {
             {steps.map((step, index) => (
               <div
                 key={step.id}
-                className={`flex flex-col items-center ${
-                  index === currentStep
+                className={`flex flex-col items-center ${index === currentStep
                     ? "text-primary scale-110 transition-all duration-200"
                     : index < currentStep
                       ? "text-primary"
                       : "text-gray-400"
-                }`}
+                  }`}
               >
                 <span className="text-2xl mb-2">{step.icon}</span>
                 <span className="text-xs font-medium">{step.title}</span>
@@ -163,19 +188,19 @@ export function OnboardingForm() {
       </CardHeader>
       <CardContent className="pt-8 px-8">
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">{steps[currentStep].title}</h2>
-        <form onSubmit={handleSubmit}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-            >
-              {renderStep()}
-            </motion.div>
-          </AnimatePresence>
-        </form>
+        {/* <form onSubmit={handleSubmit}> */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            {renderStep()}
+          </motion.div>
+        </AnimatePresence>
+        {/* </form> */}
       </CardContent>
       <CardFooter className="flex justify-between border-t border-gray-200 pt-6 pb-8 px-8">
         <Button
@@ -190,7 +215,15 @@ export function OnboardingForm() {
         </Button>
         <Button
           type={currentStep === steps.length - 1 ? "submit" : "button"}
-          onClick={currentStep === steps.length - 1 ? handleSubmit : handleNext}
+          onClick={() => {
+            if (currentStep === 0) {
+              handleFirstStepSubmit()
+            } else if (currentStep === steps.length - 1) {
+              handleFinalSubmit()
+            } else {
+              handleNext()
+            }
+          }}
           disabled={!validateStep(currentStep) || isSubmitting}
           className="bg-primary hover:bg-primary/90 text-white transition-colors duration-200"
         >
