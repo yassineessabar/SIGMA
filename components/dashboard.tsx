@@ -1,11 +1,11 @@
-import { ProgressTracker } from "@/components/progress-tracker"
-import { StepCard } from "@/components/step-card"
+import { ProgressTracker } from "../components/progress-tracker"
+import { StepCard } from "../components/step-card"
 
 interface Step {
   id: number
   title: string
   instruction: string
-  status: "completed" | "pending" | "verification" // ✅ Ensure it matches ProgressTracker.tsx
+  status: "completed" | "pending" | "verification" 
   verificationRequired: boolean
 }
 
