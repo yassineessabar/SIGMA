@@ -19,7 +19,7 @@ export function StepTwo({ formData, updateFormData }: StepTwoProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Step 2: Open Your Live Account & Deposit Funds</h2>
+        <h2 className="text-2xl font-semibold">Step 3: Open Your Live Account & Deposit Funds</h2>
         {/* <InfoModal title="How to Deposit Funds">
           <ol className="list-decimal list-inside space-y-2">
             <li>Log in to your VT Markets account</li>
@@ -38,21 +38,7 @@ export function StepTwo({ formData, updateFormData }: StepTwoProps) {
           />
         </InfoModal> */}
       </div>
-
-      <p className="text-sm text-gray-600 mb-4">
-        To start trading with Sigmatic Trading strategies, you need to fund your VT Markets account. Here's how:
-      </p>
-      <div className="bg-gray-50 p-4 rounded-lg space-y-4">
-        <h3 className="font-semibold text-lg">Make Your First Deposit</h3>
-        <p className="text-sm text-gray-600">Deposit funds to start trading: <span className="text-blue-500">Deposit Funds Here</span></p>
-        <Image
-          src="/first-deposit-pic.jpg"
-          alt="Account Funding Process"
-          width={600}
-          height={300}
-          className="rounded-lg border border-gray-200"
-        />
-      </div>
+      
       <div className="p-6 bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-xl font-bold mb-2">
         1. <span className="underline">Open a Live Account</span>

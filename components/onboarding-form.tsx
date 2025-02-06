@@ -12,10 +12,12 @@ import { SummaryStep } from "../components/summary-step"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronRight, ChevronLeft } from "lucide-react"
 import { ToastContainer, toast } from "react-toastify"
+import { StepFour } from "./step-four"
 
 const steps = [
   { id: 0, title: "Basic Info", icon: "👤" },
   { id: 1, title: "Broker Signup", icon: "🏦" },
+  { id: 1, title: "Verify Your Identify ", icon: "📄" },
   { id: 2, title: "Deposit Funds", icon: "💰" },
   { id: 3, title: "Select Robot", icon: "🤖" },
   { id: 4, title: "Review & Submit", icon: "✅" },
@@ -58,9 +60,11 @@ export function OnboardingForm() {
         return formData.fullName.trim() !== "" && formData.email.trim() !== ""
       case 1:
         return formData.brokerAccountNumber.trim() !== ""
-      case 2:
-        return formData.depositAmount >= 400
+      case 2: 
+      return true 
       case 3:
+        return formData.depositAmount >= 400
+      case 4:
         return ["sigmatic3.5", "sigmaticRV2", "sigmaticRV4"].includes(formData.selectedRobot)
       default:
         return true
@@ -156,10 +160,12 @@ export function OnboardingForm() {
       case 1:
         return <StepOne formData={formData} updateFormData={updateFormData} />
       case 2:
-        return <StepTwo formData={formData} updateFormData={updateFormData} />
+        return <StepFour formData={formData} updateFormData={updateFormData} />
       case 3:
-        return <StepThree formData={formData} updateFormData={updateFormData} />
+        return <StepTwo formData={formData} updateFormData={updateFormData} />
       case 4:
+        return <StepThree formData={formData} updateFormData={updateFormData}/>
+      case 5:
         return <SummaryStep formData={formData} />
       default:
         return null
