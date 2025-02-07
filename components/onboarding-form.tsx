@@ -38,7 +38,7 @@ export function OnboardingForm() {
     fullName: "",
     email: "",
     brokerAccountNumber: "",
-    depositAmount: 0, 
+    depositAmount: "", 
     depositProof: undefined,
     selectedRobot: "", 
   })
