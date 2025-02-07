@@ -7,8 +7,9 @@ import Image from "next/image"
 import Link from "next/link"
 
 interface FormData {
-  depositAmount: number
+  depositAmount: string
 }
+
 
 interface StepTwoProps {
   formData: FormData
@@ -156,13 +157,15 @@ export function StepTwo({ formData, updateFormData }: StepTwoProps) {
       <div className="space-y-2">
         <Label htmlFor="depositAmount">Deposit Amount</Label>
         <Input
-          id="depositAmount"
-          type="text"
-          value={formData.depositAmount}
-          onChange={(e) => updateFormData({ depositAmount: Number(e.target.value) })}
-          // placeholder="Enter deposit amount"
-          min="400"
-        />
+  id="depositAmount"
+  type="text"
+  value={formData.depositAmount || ""}
+  onChange={(e) =>
+    updateFormData({ depositAmount: e.target.value === "" ? NaN : Number(e.target.value) })
+  }
+  min="400"
+/>
+
         <p className="text-sm text-gray-600">Enter the exact amount you deposited into your VT Markets account.</p>
       </div>
     </div>

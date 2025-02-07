@@ -31,7 +31,7 @@ export function StepFour({ formData, updateFormData }: StepOneProps) {
 
                 <h1 className="font-bold text-[20px]">2. Upload Required Documents</h1>
                 <p className="pt-2">Go to the <span className="font-bold">"Upload Documents"</span> section:</p>
-                <ul className=" pl-20">
+                <ul className="">
                     <li className="pt-2">• Upload a valid Identification Document (Passport, ID card, or Driver’s License).
                         <li>
                             <a className="text-blue-500" href="https://myportal.errante.com/profile/documents?cid=1">https://myportal.errante.com/profile/documents?cid=1</a>
