@@ -128,7 +128,7 @@ export function StepTwo({ formData, updateFormData }: StepTwoProps) {
 
       <div className="rounded-lg overflow-hidden mt-6 space-y-10">
         <Image
-          src="/funds-pic-one.jpg"
+          src="/funds-one-pic.jpg"
           alt="Live Account Setup"
           width={700}
           height={350}
