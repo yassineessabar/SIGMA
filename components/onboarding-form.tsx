@@ -156,7 +156,7 @@ export function OnboardingForm() {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <StepTwo formData={formData} updateFormData={updateFormData} />
+        return <StepZero formData={formData} updateFormData={updateFormData} />
       case 1:
         return <StepOne formData={formData} updateFormData={updateFormData} />
       case 2:
