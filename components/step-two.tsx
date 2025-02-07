@@ -157,7 +157,7 @@ export function StepTwo({ formData, updateFormData }: StepTwoProps) {
         <Label htmlFor="depositAmount">Deposit Amount</Label>
         <Input
           id="depositAmount"
-          type="number"
+          type="text"
           value={formData.depositAmount}
           onChange={(e) => updateFormData({ depositAmount: Number(e.target.value) })}
           // placeholder="Enter deposit amount"
