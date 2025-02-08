@@ -59,7 +59,8 @@ export function OnboardingForm() {
       case 0:
         return formData.fullName.trim() !== "" && formData.email.trim() !== ""
       case 1:
-        return formData.brokerAccountNumber.trim() !== ""
+        // return formData.brokerAccountNumber.trim() !== ""
+        return true
       case 2: 
       return true 
       case 3:
